@@ -1,0 +1,4 @@
+[osd.{{item.id}}]
+	key =
+	caps mon = "allow profile osd"
+	caps osd = "allow *"

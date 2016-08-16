@@ -1,0 +1,63 @@
+- name: create filesystem on osd's drive
+  filesystem: fstype=xfs dev="{{item.dev}}"
+  with_items: "{{ ceph_osd_map[inventory_hostname_short] | default([]) }}"
+  tags: ceph-osd-filesystem
+
+- name: create osd directory
+  file:
+    path: "/var/lib/ceph/osd/{{ceph_cluster_name}}-{{item.id}}"
+    state: directory
+    owner: ceph
+  with_items: "{{ ceph_osd_map[inventory_hostname_short] | default([]) }}"
+
+- name: mount osd drive
+  mount:
+    src: "{{item.dev}}"
+    name: "/var/lib/ceph/osd/{{ceph_cluster_name}}-{{item.id}}"
+    fstype: xfs
+    state: mounted
+  with_items: "{{ ceph_osd_map[inventory_hostname_short] | default([]) }}"
+
+- name: copy unit for ceph-osd-perms.service
+  template:
+    src: ceph-osd-perms.service
+    dest: /etc/systemd/system
+  register: ceph_osd_perms_unit
+
+- name: reload systemd when unit changed
+  shell: systemctl daemon-reload
+  when: ceph_osd_perms_unit.changed
+
+- name: start & enable ceph-osd-perms
+  service: name=/etc/systemd/system/ceph-osd-perms.service state=started enabled=yes
+
+- name: add ceph user to disk group
+  user:
+    name: ceph
+    groups: disk
+    append: yes
+
+- name: copy keyring to osd directory
+  template:
+    src: keyring-osd
+    dest: /var/lib/ceph/osd/{{ceph_cluster_name}}-{{ item.id }}/keyring
+    owner: ceph
+  with_items: "{{ ceph_osd_map[inventory_hostname_short] | default([]) }}"
+- name: populate osd directory
+  shell: ceph-osd --conf /etc/ceph/ceph.conf --id {{item.id}} --mkfs --setuser ceph
+  args:
+    creates: /var/lib/ceph/osd/{{ceph_cluster_name}}-{{item.id}}/ceph_fsid
+  with_items: "{{ ceph_osd_map[inventory_hostname_short] | default([]) }}"
+- name: create done file
+  file: path="/var/lib/ceph/osd/{{ceph_cluster_name}}-{{item.id}}/done" state=touch
+  with_items: "{{ ceph_osd_map[inventory_hostname_short] | default([]) }}"
+
+- name: start and enable osds
+  service: name="ceph-osd@{{item.id}}" state=started enabled=yes
+  with_items: "{{ ceph_osd_map[inventory_hostname_short] | default([]) }}"
+
+- name: enable ceph-osd and ceph
+  service: name="{{item}}" enabled=yes
+  with_items:
+    - ceph-osd.target
+    - ceph.target

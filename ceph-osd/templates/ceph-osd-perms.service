@@ -1,0 +1,15 @@
+[Unit]
+Description=Set OSD journals owned by ceph user
+After=local-fs.target
+Before=ceph-osd.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+{% if ceph_osd_map[inventory_hostname_short] is defined %}
+ExecStart=/usr/bin/chown -v ceph {{ ceph_osd_map[inventory_hostname_short]|map(attribute='journal')|sort|join(' ') }}
+ExecStop=/usr/bin/chown -v root {{ ceph_osd_map[inventory_hostname_short]|map(attribute='journal')|sort|join(' ') }}
+{% endif %}
+
+[Install]
+WantedBy=multi-user.target
