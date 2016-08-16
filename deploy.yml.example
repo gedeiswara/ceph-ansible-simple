@@ -1,0 +1,16 @@
+- hosts: all
+  max_fail_percentage: 0
+  roles:
+    - {role: debian-common, tags: common}
+    - {role: c2-prepare, tags: c2-prepare}
+
+- hosts: mons
+  max_fail_percentage: 0
+  roles:
+    - {role: ceph-mon, tags: ceph-mon}
+
+- hosts: osds
+  max_fail_percentage: 0
+  roles:
+    - {role: ceph-osd, tags: ceph-osd}
+

@@ -1,0 +1,260 @@
+# global config
+ceph_fsid: 41c9c023-6426-4ed3-b00e-22ca37f88dfc
+ceph_cluster_name: ceph
+ceph_release: jewel
+ceph_version: 10.2.2
+
+ceph_mon_map:
+  - id: 1
+    host: c2-1
+    inventory: c2-1.srv
+    interface: bond0
+  - id: 4
+    host: c2-4
+    inventory: c2-4.srv
+    interface: bond0
+  - id: 7
+    host: c2-7
+    inventory: c2-7.srv
+    interface: bond0
+
+ceph_osd_partition_schema:
+  1: {name: OSD, start: 10000MiB, end: "-1", type: primary, id: 0x8e}
+
+
+ceph_osd_map:
+  c2-1:
+    - id: 0
+      dev: /dev/sda
+      journal: /dev/sdi5
+    - id: 1
+      dev: /dev/sdb
+      journal: /dev/sdj2
+    - id: 2
+      dev: /dev/sdc
+      journal: /dev/sdi6
+    - id: 3
+      dev: /dev/sdd
+      journal: /dev/sdj3
+    - id: 4
+      dev: /dev/sde
+      journal: /dev/sdi7
+    - id: 5
+      dev: /dev/sdf
+      journal: /dev/sdj5
+    - id: 6
+      dev: /dev/sdg
+      journal: /dev/sdj6
+    - id: 7
+      dev: /dev/sdh
+      journal: /dev/sdj7
+  c2-2:
+    - id: 8
+      dev: /dev/sda
+      journal: /dev/sdi5
+    - id: 9
+      dev: /dev/sdb
+      journal: /dev/sdj2
+    - id: 10
+      dev: /dev/sdc
+      journal: /dev/sdi6
+    - id: 11
+      dev: /dev/sdd
+      journal: /dev/sdj3
+    - id: 12
+      dev: /dev/sde
+      journal: /dev/sdi7
+    - id: 13
+      dev: /dev/sdf
+      journal: /dev/sdj5
+    - id: 14
+      dev: /dev/sdg
+      journal: /dev/sdj6
+    - id: 15
+      dev: /dev/sdh
+      journal: /dev/sdj7
+  c2-3:
+    - id: 16
+      dev: /dev/sda
+      journal: /dev/sdi5
+    - id: 17
+      dev: /dev/sdb
+      journal: /dev/sdj2
+    - id: 18
+      dev: /dev/sdc
+      journal: /dev/sdi6
+    - id: 19
+      dev: /dev/sdd
+      journal: /dev/sdj3
+    - id: 20
+      dev: /dev/sde
+      journal: /dev/sdi7
+    - id: 21
+      dev: /dev/sdf
+      journal: /dev/sdj5
+    - id: 22
+      dev: /dev/sdg
+      journal: /dev/sdj6
+    - id: 23
+      dev: /dev/sdh
+      journal: /dev/sdj7
+  c2-4:
+    - id: 24
+      dev: /dev/sda
+      journal: /dev/sdi5
+    - id: 25
+      dev: /dev/sdb
+      journal: /dev/sdj2
+    - id: 26
+      dev: /dev/sdc
+      journal: /dev/sdi6
+    - id: 27
+      dev: /dev/sdd
+      journal: /dev/sdj3
+    - id: 28
+      dev: /dev/sde
+      journal: /dev/sdi7
+    - id: 29
+      dev: /dev/sdf
+      journal: /dev/sdj5
+    - id: 30
+      dev: /dev/sdg
+      journal: /dev/sdj6
+    - id: 31
+      dev: /dev/sdh
+      journal: /dev/sdj7
+  c2-5:
+    - id: 32
+      dev: /dev/sda
+      journal: /dev/sdi5
+    - id: 33
+      dev: /dev/sdb
+      journal: /dev/sdj2
+    - id: 34
+      dev: /dev/sdc
+      journal: /dev/sdi6
+    - id: 35
+      dev: /dev/sdd
+      journal: /dev/sdj3
+    - id: 36
+      dev: /dev/sde
+      journal: /dev/sdi7
+    - id: 37
+      dev: /dev/sdf
+      journal: /dev/sdj5
+    - id: 38
+      dev: /dev/sdg
+      journal: /dev/sdj6
+    - id: 39
+      dev: /dev/sdh
+      journal: /dev/sdj7
+  c2-6:
+    - id: 40
+      dev: /dev/sda
+      journal: /dev/sdi5
+    - id: 41
+      dev: /dev/sdb
+      journal: /dev/sdj2
+    - id: 42
+      dev: /dev/sdc
+      journal: /dev/sdi6
+    - id: 43
+      dev: /dev/sdd
+      journal: /dev/sdj3
+    - id: 44
+      dev: /dev/sde
+      journal: /dev/sdi7
+    - id: 45
+      dev: /dev/sdf
+      journal: /dev/sdj5
+    - id: 46
+      dev: /dev/sdg
+      journal: /dev/sdj6
+    - id: 47
+      dev: /dev/sdh
+      journal: /dev/sdj7
+  c2-7:
+    - id: 48
+      dev: /dev/sda
+      journal: /dev/sdi5
+    - id: 49
+      dev: /dev/sdb
+      journal: /dev/sdj2
+    - id: 50
+      dev: /dev/sdc
+      journal: /dev/sdi6
+    - id: 51
+      dev: /dev/sdd
+      journal: /dev/sdj3
+    - id: 52
+      dev: /dev/sde
+      journal: /dev/sdi7
+    - id: 53
+      dev: /dev/sdf
+      journal: /dev/sdj5
+    - id: 54
+      dev: /dev/sdg
+      journal: /dev/sdj6
+    - id: 55
+      dev: /dev/sdh
+      journal: /dev/sdj7
+
+ceph_keyring:
+  mon: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  admin: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-0: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-1: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-10: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-11: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-12: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-13: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-14: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-15: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-16: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-17: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-18: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-19: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-2: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-20: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-21: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-22: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-23: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-24: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-25: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-26: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-27: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-28: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-29: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-3: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-30: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-31: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-32: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-33: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-34: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-35: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-36: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-37: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-38: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-39: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-4: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-40: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-41: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-42: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-43: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-44: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-45: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-46: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-47: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-48: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-49: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-5: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-50: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-51: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-52: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-53: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-54: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-55: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-6: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-7: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-8: AQasdfasdfkeyringkeyringasdflkjaldkf==
+  osd-9: AQasdfasdfkeyringkeyringasdflkjaldkf==
