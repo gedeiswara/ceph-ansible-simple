@@ -1,0 +1,30 @@
+- name: gather facts
+  setup:
+
+# include ceph config
+- include_vars: "ceph.yml"
+  tags: config
+
+- name: print info
+  debug: msg="going to install role ceph-common on {{inventory_hostname}}" #"
+
+- name: import rpm key
+  rpm_key: key=https://download.ceph.com/keys/release.asc state=present
+
+- name: add ceph repository
+  template: src=ceph.repo dest=/etc/yum.repos.d/
+
+- name: install required tools
+  yum:
+    name: snappy,leveldb,gdisk,python-argparse,gperftools-libs,redhat-lsb-core
+    state: present
+
+- name: install ceph
+  yum: name=ceph-{{ceph_version}} state=present update_cache=yes
+
+- name: copy ceph config
+  template: src=ceph.conf dest="/etc/ceph/{{ceph_cluster_name}}.conf" owner=ceph mode=0600
+  tags: config
+
+- name: copy check_ceph_health
+  template: src=check_ceph_health dest=/usr/local/bin/ owner=root mode=0700
