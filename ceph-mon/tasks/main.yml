@@ -1,0 +1,70 @@
+- name: print info
+  debug: msg="going to install ceph-mon on {{inventory_hostname}}" #"
+
+- name: copy mon keyring
+  template: src="{{item}}" dest=/etc/ceph/ mode=0600 owner=ceph
+  with_items:
+    - ceph.mon.keyring
+    - ceph.client.admin.keyring
+
+- name: create mon diretory
+  file:
+   path: /var/lib/ceph/mon/{{ceph_cluster_name}}-{{item.id}}
+   owner: ceph
+   state: directory
+  with_items: "{{ceph_mon_map}}"
+  when: ansible_hostname == item.host
+
+- name: copy monmapgen
+  template: src=monmapgen.sh dest=/etc/ceph/ mode=0700 owner=ceph
+
+- name: generate monmap
+  shell: /etc/ceph/monmapgen.sh && chown ceph /etc/ceph/monmap
+  args:
+    creates: /etc/ceph/monmap
+
+- block:
+    - name: populate mon directory
+      shell: ceph-mon --cluster {{ceph_cluster_name}} --mkfs -i {{item.id}} --monmap /etc/ceph/monmap --keyring /etc/ceph/ceph.mon.keyring
+      args:
+        creates: /var/lib/ceph/mon/{{ceph_cluster_name}}-{{item.id}}/keyring
+      with_items: "{{ceph_mon_map}}"
+      when: ansible_hostname == item.host
+
+    - name: touch done file
+      file: path=/var/lib/ceph/mon/{{ceph_cluster_name}}-{{item.id}}/done state=touch
+      with_items: "{{ceph_mon_map}}"
+      when: ansible_hostname == item.host
+  become: yes
+  become_user: ceph
+
+- name: start and enable mon
+  service: name="ceph-mon@{{item.id}}" state=started enabled=yes
+  with_items: "{{ceph_mon_map}}"
+  when: ansible_hostname == item.host
+
+- name: start enable ceph and ceph-mon
+  service: name="{{item}}" enabled=yes
+  with_items:
+    - ceph-mon.target
+    - ceph.target
+
+# ceph admin
+- name: create osds
+  shell: 'while [ "$(ceph osd ls | grep ^{{item}} > /dev/null; echo -n $?)" != 0 ]; do ceph osd create; done'
+  with_items: "[{% for server in ceph_osd_map.items() %}{% for osd in server[1] %}{{osd.id}},{% endfor %}{% endfor %}]"
+  run_once: true
+  tags: create-osds
+
+- name: copy keyrings to /tmp/
+  template:
+    src: keyring-osd
+    dest: "/tmp/keyring-{{item}}"
+  with_items: "[{% for server in ceph_osd_map.items() %}{% for osd in server[1] %}{{osd.id}},{% endfor %}{% endfor %}]"
+  run_once: true
+
+- name: import keyrings
+  shell: ceph auth import -i /tmp/keyring-{{item}}
+  with_items: "[{% for server in ceph_osd_map.items() %}{% for osd in server[1] %}{{osd.id}},{% endfor %}{% endfor %}]"
+  run_once: true
+

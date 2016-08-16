@@ -1,0 +1,10 @@
+[mon.]
+	key = {{ ceph_keyring.mon }}
+	caps mon = "allow *"
+[client.admin]
+	key = {{ ceph_keyring.admin }}
+	auid = 0
+	caps mds = "allow"
+	caps mon = "allow *"
+	caps osd = "allow *"
+

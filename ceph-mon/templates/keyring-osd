@@ -1,0 +1,4 @@
+[osd.{{item}}]
+	key = {{ ceph_keyring['osd-' + item|string] }}
+	caps mon = "allow profile osd"
+	caps osd = "allow *"
