@@ -1,0 +1,100 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+
+# Author: Tomáš Kukrál, FIT CTU
+
+
+from datetime import datetime
+import json
+import rados
+import sys
+import traceback
+
+# required packages:
+#   yum install python-rados
+
+# default ceph values
+CEPH_CONFIG = '/etc/ceph/ceph.conf'
+
+# nagios exit code
+STATUS_OK = 0
+STATUS_WARNING = 1
+STATUS_ERROR = 2
+STATUS_UNKNOWN = 3
+
+# Ceph config
+POOL_NAME = 'tests'
+OBJECT_NAME = str(datetime.utcnow())
+
+
+class CephTest():
+    def __init__(self):
+        try:
+            # connect to cluster
+            self.connect(CEPH_CONFIG)
+
+            # get stats
+            self.stats = self.get_stats()
+
+            # write object
+            self.write_object(
+                POOL_NAME,
+                OBJECT_NAME,
+                json.dumps(self.stats)
+            )
+        except:
+            self.exit(STATUS_ERROR, traceback.format_exc())
+
+        # return OK
+        self.exit(STATUS_OK, 'OK')
+
+    def exit(self, code, msg):
+        print(msg.replace('\n', '<br>'))
+        sys.exit(code)
+
+    def connect(self, conffile):
+        """Connects to cluster"""
+
+        self.cluster = rados.Rados(conffile=conffile)
+        self.cluster.connect()
+
+    def get_stats(self):
+        """Return cluster statistics"""
+        stats = {'pools': {}}
+
+        # cluster wide stats
+        stats['all'] = self.cluster.get_cluster_stats()
+
+        # pool stats
+        for pool in self.cluster.list_pools():
+            # open ioctx to pool
+            ioctx = self.cluster.open_ioctx(pool)
+            stats['pools'][pool] = ioctx.get_stats()
+            ioctx.close()
+
+        return stats
+
+    def create_pool(self, name):
+        """Creates pool if it doesn't exists"""
+
+        if name not in self.cluster.list_pools():
+            self.cluster.create_pool(name)
+
+    def write_object(self, pool, name, content):
+        """Write object"""
+
+        self.create_pool(pool)
+
+        # open io context
+        ioctx = self.cluster.open_ioctx(pool)
+
+        # write object
+        ioctx.write_full(name, content)
+
+        ioctx.read(name)
+
+        # close io context
+        ioctx.close()
+
+if __name__ == "__main__":
+    a = CephTest()

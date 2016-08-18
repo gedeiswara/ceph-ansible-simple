@@ -26,5 +26,8 @@
   template: src=ceph.conf dest="/etc/ceph/{{ceph_cluster_name}}.conf" owner=ceph mode=0600
   tags: config
 
-- name: copy check_ceph_health
-  template: src=check_ceph_health dest=/usr/local/bin/ owner=root mode=0700
+- name: copy monitoring scripts
+  template: src="{{item}}" dest=/usr/local/bin/ owner=root mode=0700
+  with_items:
+    - check_ceph_health
+    - check_ceph_status
