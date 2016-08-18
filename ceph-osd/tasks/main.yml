@@ -28,8 +28,11 @@
   shell: systemctl daemon-reload
   when: ceph_osd_perms_unit.changed
 
-- name: start & enable ceph-osd-perms
-  service: name=/etc/systemd/system/ceph-osd-perms.service state=started enabled=yes
+- name: enable ceph-osd-perms
+  service: name=/etc/systemd/system/ceph-osd-perms.service enabled=yes
+
+- name: start ceph-osd-perms
+  service: name=ceph-osd-perms.service state=started
 
 - name: add ceph user to disk group
   user:
