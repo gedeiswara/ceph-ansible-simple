@@ -47,7 +47,7 @@
     owner: ceph
   with_items: "{{ ceph_osd_map[inventory_hostname_short] | default([]) }}"
 - name: populate osd directory
-  shell: ceph-osd --conf /etc/ceph/ceph.conf --id {{item.id}} --mkfs --setuser ceph
+  shell: ceph-osd --conf /etc/ceph/ceph.conf --id {{item.id}} --mkfs --mkjournal --setuser ceph
   args:
     creates: /var/lib/ceph/osd/{{ceph_cluster_name}}-{{item.id}}/ceph_fsid
   with_items: "{{ ceph_osd_map[inventory_hostname_short] | default([]) }}"
