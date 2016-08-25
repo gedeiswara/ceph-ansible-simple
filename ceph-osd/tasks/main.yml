@@ -18,6 +18,12 @@
     state: mounted
   with_items: "{{ ceph_osd_map[inventory_hostname_short] | default([]) }}"
 
+- name: reset owner for osd directory
+  file:
+    path: "/var/lib/ceph/osd/{{ceph_cluster_name}}-{{item.id}}"
+    owner: ceph
+  with_items: "{{ ceph_osd_map[inventory_hostname_short] | default([]) }}"
+
 - name: copy unit for ceph-osd-perms.service
   template:
     src: ceph-osd-perms.service
