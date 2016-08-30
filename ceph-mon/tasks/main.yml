@@ -51,7 +51,7 @@
 
 # ceph admin
 - name: create osds
-  shell: "ceph osd ls | grep ^{{item}} > /dev/null || ceph osd create $(uuidgen) {{item}}"
+  shell: 'while [ "$(ceph osd ls | grep ^{{item}} > /dev/null; echo -n $?)" != 0 ]; do ceph osd create; done'
   with_items: "[{% for server in ceph_osd_map.items() %}{% for osd in server[1] %}{{osd.id}},{% endfor %}{% endfor %}]"
   run_once: true
   tags: create-osds
